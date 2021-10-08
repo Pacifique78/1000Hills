@@ -1,8 +1,8 @@
-import React from "react";
-import Comment from "../components/Comment";
-import Footer from "../components/Footer";
-import Navbar from "../components/NavBar/Navbar";
-import Place from "../components/Place";
+import React from 'react';
+import Comment from '../components/Comment';
+import Footer from '../components/Footer';
+import Navbar from '../components/NavBar/Navbar';
+import Place from '../components/Place';
 
 const Places = (props) => {
   return (
@@ -70,7 +70,7 @@ const Places = (props) => {
         />
         <Comment profile="images/avatar.png" />
       </div>
-      <Footer />
+      <Footer {...props} />
     </div>
   );
 };

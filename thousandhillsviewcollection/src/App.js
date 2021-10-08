@@ -7,6 +7,7 @@ import Videos from "./containers/Videos";
 import Contact from "./containers/Contact";
 import Gallery from "./containers/Gallery";
 import { useState } from "react";
+import Adminpage from "./containers/Adminpage";
 
 const App = () => {
   const [isAuthenticated, setisAuthenticated] = useState(false);
@@ -47,6 +48,16 @@ const App = () => {
           path="/gallery/:name"
           render={(props) => (
             <Gallery
+              isAuthenticated={isAuthenticated}
+              setisAuthenticated={setisAuthenticated}
+              {...props}
+            />
+          )}
+        />
+        <Route
+          path="/admin"
+          render={(props) => (
+            <Adminpage
               isAuthenticated={isAuthenticated}
               setisAuthenticated={setisAuthenticated}
               {...props}

@@ -1,9 +1,9 @@
-import React from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/NavBar/Navbar";
-import AllVideos from "../components/Videos";
+import React from 'react';
+import Footer from '../components/Footer';
+import Navbar from '../components/NavBar/Navbar';
+import AllVideos from '../components/Videos';
 
-const Videos = () => {
+const Videos = (props) => {
   return (
     <div>
       <div className="container bg-places-main-img h-3/4 w-full bg-no-repeat bg-cover">
@@ -45,7 +45,7 @@ const Videos = () => {
       <div className="">
         <AllVideos />
       </div>
-      <Footer />
+      <Footer {...props} />
     </div>
   );
 };

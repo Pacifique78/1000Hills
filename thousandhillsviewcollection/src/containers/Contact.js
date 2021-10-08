@@ -1,9 +1,47 @@
-import React from "react";
-import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Navbar from "../components/NavBar/Navbar";
+import React, { useCallback, useEffect, useState } from 'react';
+import Button from '../components/Button';
+import Footer from '../components/Footer';
+import Navbar from '../components/NavBar/Navbar';
+import axios from '../axios-base';
+import Spinner from '../components/Spinner';
 
-const Contact = () => {
+const Contact = (props) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { isAuthenticated, history } = props;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      history.push('/');
+      window.location.reload();
+    }
+  }, [isAuthenticated, history]);
+  const sendMessage = useCallback(() => {
+    setLoading(true);
+    setResponse(null);
+    axios
+      .post('/api/messages', {
+        name: name,
+        email: email,
+        phone: phone,
+        message: message,
+      })
+      .then((response) => {
+        setLoading(false);
+        setEmail('');
+        setName('');
+        setPhone('');
+        setMessage('');
+        setResponse(response?.data?.message);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setResponse(err?.message);
+      });
+  }, [name, email, phone, message]);
   return (
     <div>
       <div className="container bg-places-main-img h-3/4 w-full bg-no-repeat bg-cover">
@@ -38,7 +76,7 @@ const Contact = () => {
         </div>
         <div className="flex flex-col p-32">
           <span className="text-white text-6xl font-bold italic font-serif p-2">
-            Videos
+            Leave a message
           </span>
         </div>
         <div className="m-auto w-3/5 pb-10">
@@ -46,25 +84,37 @@ const Contact = () => {
             className="w-full m-1 p-2 placeholder-gray-500 font-bold rounded outline-none"
             type="text"
             placeholder="Name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
           />
           <input
             className="w-full m-1 p-2 placeholder-gray-500 font-bold rounded outline-none"
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
           />
           <input
             className="w-full m-1 p-2 placeholder-gray-500 font-bold rounded outline-none"
             type="text"
             placeholder="Phone"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
           />
           <textarea
             className="w-full m-1 p-2 placeholder-gray-500 font-bold rounded outline-none"
             placeholder="Enter your message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
           ></textarea>
-          <Button type="action">Submit</Button>
+          {loading ? <Spinner /> : null}
+          {response ? <p className="text-white font-bold">{response}</p> : null}
+          <Button type="action" clicked={sendMessage}>
+            Submit
+          </Button>
         </div>
       </div>
-      <Footer />
+      <Footer {...props} />
     </div>
   );
 };

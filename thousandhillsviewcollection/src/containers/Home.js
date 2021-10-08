@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import HomePhoto from "../components/HomePhoto";
-import Navbar from "../components/NavBar/Navbar";
-import image1 from "../assets/images/53c598_87785380900045e49bd42aac1cadd474.webp";
-import image2 from "../assets/images/cyohoha.jpg";
-import image3 from "../assets/images/images.jpg";
-import Button from "../components/Button";
-import HomePhotoCard from "../components/HomePhotoCard";
-import Footer from "../components/Footer";
-import { useHistory } from "react-router";
-import Modal from "../components/Modal";
-import axios from "../axios-base";
-import Spinner from "../components/Spinner";
+import React, { useCallback, useEffect, useState } from 'react';
+import HomePhoto from '../components/HomePhoto';
+import Navbar from '../components/NavBar/Navbar';
+import image1 from '../assets/images/53c598_87785380900045e49bd42aac1cadd474.webp';
+import image2 from '../assets/images/cyohoha.jpg';
+import image3 from '../assets/images/images.jpg';
+import Button from '../components/Button';
+import HomePhotoCard from '../components/HomePhotoCard';
+import Footer from '../components/Footer';
+import { useHistory } from 'react-router';
+import Modal from '../components/Modal';
+import axios from '../axios-base';
+import Spinner from '../components/Spinner';
 
 const Home = (props) => {
   const history = useHistory();
@@ -18,47 +18,60 @@ const Home = (props) => {
   const [isSignup, setIsSignup] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('User');
+  const { setisAuthenticated } = props;
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem('jwt');
+    const isAdmin = localStorage.getItem('role');
     if (token) {
-      props.setisAuthenticated(true);
-      setIsModalOpen(false);
+      console.log(isAdmin === 'true');
+      if (isAdmin === 'true') {
+        setisAuthenticated(true);
+        history.push('/admin');
+      } else {
+        setIsModalOpen(false);
+        setisAuthenticated(true);
+      }
     }
-  }, []);
+  }, [setisAuthenticated, history]);
   const authHandler = useCallback(() => {
     setIsLoading(true);
     setError(null);
     let data = {};
-    let url = "";
+    let url = '';
     if (isSignup) {
       data = { name: name, email: email, phone: phone, password: password };
-      url = "/api/auth/signup";
+      url = '/api/auth/signup';
     } else {
       data = { email: email, password: password };
-      url = "/api/auth/signin";
+      url = '/api/auth/signin';
     }
-    console.log(data);
     axios
       .post(url, data)
       .then((response) => {
         setIsLoading(false);
-        localStorage.setItem("jwt", response?.data?.results?.token ?? "");
-        localStorage.setItem("name", response?.data?.results?.name ?? "");
-        localStorage.setItem("email", response?.data?.results?.email ?? "");
-        props.setisAuthenticated(true);
-        setIsModalOpen(false);
+        localStorage.setItem('jwt', response?.data?.results?.token ?? '');
+        localStorage.setItem('name', response?.data?.results?.name ?? '');
+        localStorage.setItem('email', response?.data?.results?.email ?? '');
+        localStorage.setItem('role', response?.data?.results?.isAdmin ?? '');
+        setisAuthenticated(true);
+        if (response?.data?.results?.isAdmin) {
+          history.push('/admin');
+        } else {
+          setIsModalOpen(false);
+        }
       })
       .catch((err) => {
         setIsLoading(false);
-        localStorage.removeItem("jwt");
-        setError(err?.response?.data ?? { error: "Something wrong happened" });
+        localStorage.removeItem('jwt');
+        setError(err?.response?.data ?? { error: 'Something wrong happened' });
         console.log(err.message);
       });
-  }, [isSignup, name, email, phone, password]);
+  }, [isSignup, name, email, phone, password, setisAuthenticated, history]);
   let form = null;
   if (isSignup) {
     form = (
@@ -141,6 +154,14 @@ const Home = (props) => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
+            <select
+              className="w-full m-1 p-2 placeholder-gray-500 font-bold rounded outline-none border"
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+            >
+              <option value="Admin">Admin</option>
+              <option value="User">User</option>
+            </select>
           </>
         )}
 
@@ -169,7 +190,7 @@ const Home = (props) => {
       </Modal>
       <div
         className="container m-auto box-border"
-        style={{ backgroundColor: "rgb(237, 223, 228)" }}
+        style={{ backgroundColor: 'rgb(237, 223, 228)' }}
       >
         <Navbar />
         <div className="w-10 h-5 m-auto">
@@ -201,7 +222,7 @@ const Home = (props) => {
         </div>
         <div className="p-20">
           <span
-            style={{ padding: "50px !important" }}
+            style={{ padding: '50px !important' }}
             className="text-header-color text-4xl italic"
           >
             YOUR MEMORIES OUR PRIORITY
@@ -210,7 +231,7 @@ const Home = (props) => {
         <div className="p-10">
           <Button
             clicked={() => {
-              history.push("/places");
+              history.push('/places');
             }}
           >
             GET IN THE MOOD
@@ -222,9 +243,9 @@ const Home = (props) => {
           <HomePhotoCard
             {...props}
             images={[
-              "/uploads/kivu.jpg",
-              "/uploads/kivu2.jpg",
-              "/uploads/kivu3.jpg",
+              '/uploads/kivu.jpg',
+              '/uploads/kivu2.jpg',
+              '/uploads/kivu3.jpg',
             ]}
             albumNumber="1"
             albumName="Lake Kivu"
@@ -233,9 +254,9 @@ const Home = (props) => {
           <HomePhotoCard
             {...props}
             images={[
-              "/uploads/cyohoha.jpg",
-              "/uploads/cyohoha2.jpg",
-              "/uploads/cyohoha3.jpg",
+              '/uploads/cyohoha.jpg',
+              '/uploads/cyohoha2.jpg',
+              '/uploads/cyohoha3.jpg',
             ]}
             albumNumber="2"
             albumName="Cyohoha Tea Plantation"
@@ -244,9 +265,9 @@ const Home = (props) => {
           <HomePhotoCard
             {...props}
             images={[
-              "/uploads/ruganzu.jpg",
-              "/uploads/ruganzu2.jpg",
-              "/uploads/ruganzu3.jpg",
+              '/uploads/ruganzu.jpg',
+              '/uploads/ruganzu2.jpg',
+              '/uploads/ruganzu3.jpg',
             ]}
             albumNumber="3"
             albumName="Ikirenge cya Ruganzu"
@@ -265,7 +286,7 @@ const Home = (props) => {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer {...props} />
     </div>
   );
 };

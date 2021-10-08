@@ -1,43 +1,50 @@
-import React from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/NavBar/Navbar";
+import React, { useEffect } from 'react';
+import Footer from '../components/Footer';
+import Navbar from '../components/NavBar/Navbar';
 
 const Gallery = (props) => {
   const { name } = props.match.params;
   const places = [
     {
-      number: "01",
-      name: "Lake Kivu",
-      nickname: "kivu",
-      images: ["/uploads/kivu.jpg", "/uploads/kivu2.jpg", "/uploads/kivu3.jpg"],
+      number: '01',
+      name: 'Lake Kivu',
+      nickname: 'kivu',
+      images: ['/uploads/kivu.jpg', '/uploads/kivu2.jpg', '/uploads/kivu3.jpg'],
       description:
-        "Lake Kivu is one of the African Great Lakes. It lies on the border between the Democratic Republic of the Congo and Rwanda, and is in the Albertine Rift, the western branch of the East African Rift. Lake Kivu empties into the Ruzizi River, which flows southwards into Lake Tanganyika. ",
+        'Lake Kivu is one of the African Great Lakes. It lies on the border between the Democratic Republic of the Congo and Rwanda, and is in the Albertine Rift, the western branch of the East African Rift. Lake Kivu empties into the Ruzizi River, which flows southwards into Lake Tanganyika. ',
     },
     {
-      number: "02",
-      name: "Cyohoha Tea Plantation",
-      nickname: "tea",
+      number: '02',
+      name: 'Cyohoha Tea Plantation',
+      nickname: 'tea',
       images: [
-        "/uploads/cyohoha.jpg",
-        "/uploads/cyohoha2.jpg",
-        "/uploads/cyohoha3.jpg",
+        '/uploads/cyohoha.jpg',
+        '/uploads/cyohoha2.jpg',
+        '/uploads/cyohoha3.jpg',
       ],
       description:
         "I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.",
     },
     {
-      number: "03",
-      name: "Ikirenge Cya Ruganzu",
-      nickname: "foot",
+      number: '03',
+      name: 'Ikirenge Cya Ruganzu',
+      nickname: 'foot',
       images: [
-        "/uploads/ruganzu.jpg",
-        "/uploads/ruganzu2.jpg",
-        "/uploads/ruganzu3.jpg",
+        '/uploads/ruganzu.jpg',
+        '/uploads/ruganzu2.jpg',
+        '/uploads/ruganzu3.jpg',
       ],
       description:
-        "Ikirenge cya Ruganzu is the name of landmark in Rwanda, Rulindo district in Rusiga sector. This place named after King Ruganzu II Ndili.",
+        'Ikirenge cya Ruganzu is the name of landmark in Rwanda, Rulindo district in Rusiga sector. This place named after King Ruganzu II Ndili.',
     },
   ];
+  const { isAuthenticated, history } = props;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      history.push('/');
+      window.location.reload();
+    }
+  }, [isAuthenticated, history]);
   return (
     <div>
       <div
@@ -99,11 +106,12 @@ const Gallery = (props) => {
               <img
                 className="w-full h-full object-cover"
                 src={`${process.env.REACT_APP_BACKEND_URL}${image}`}
+                alt=""
               />
             </div>
           ))}
       </div>
-      <Footer />
+      <Footer {...props} />
     </div>
   );
 };
