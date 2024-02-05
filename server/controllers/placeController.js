@@ -1,4 +1,4 @@
-import Place from "../models/place.js";
+import Place from "../models/Place.js";
 
 export const createPlace = async (req, res) => {
   let { name, albumNumber, description } = req.body;
